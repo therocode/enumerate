@@ -1,6 +1,7 @@
 #pragma once
 #include <type_traits>
 #include <cstddef>
+#include <utility>
 
 namespace en
 {
@@ -11,7 +12,7 @@ struct enumerate_wrapper
     using pointer_type = std::conditional_t<std::is_const_v<container_type>, typename container_type::const_pointer, typename container_type::pointer>;
     using reference_type = std::conditional_t<std::is_const_v<container_type>, typename container_type::const_reference, typename container_type::reference>;
 
-    enumerate_wrapper(container_type& c): container(c)
+    constexpr enumerate_wrapper(container_type& c): container(c)
     {
 
     }
@@ -22,36 +23,36 @@ struct enumerate_wrapper
         iterator_type value;
 
 
-        bool operator!=(const iterator_type& other) const
+        constexpr bool operator!=(const iterator_type& other) const
         {
             return value != other;
         }
-        enumerate_wrapper_iter& operator++()
+        constexpr enumerate_wrapper_iter& operator++()
         {
             ++index;
             ++value;
             return *this;
         }
 
-        std::pair<size_t, reference_type> operator*() {
+        constexpr std::pair<size_t, reference_type> operator*() {
             return std::pair<size_t, reference_type>{index, *value};
         }
     };
 
-    enumerate_wrapper_iter begin()
+    constexpr enumerate_wrapper_iter begin()
     {
-        return {0, container.begin()};
+        return {0, std::begin(container)};
     }
 
-    iterator_type end()
+    constexpr iterator_type end()
     {
-        return container.end();
+        return std::end(container);
     }
     container_type& container;
 };
 
 template <typename container_type>
-auto enumerate(container_type& c)
+constexpr auto enumerate(container_type& c)
 {
     return enumerate_wrapper(c);
 }
