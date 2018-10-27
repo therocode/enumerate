@@ -56,4 +56,10 @@ constexpr auto enumerate(container_type& c)
 {
     return enumerate_wrapper(c);
 }
+
+template <typename container_type>
+constexpr auto const_enumerate(const container_type& c)
+{
+    return enumerate_wrapper(c);
+}
 }
